@@ -12,7 +12,7 @@ android {
 
     defaultConfig {
 
-        minSdkVersion 27
+        minSdkVersion 25
         targetSdkVersion 32
         versionCode project.property("version_code").toInteger()
         versionName project.property("version_name") as String
@@ -41,10 +41,14 @@ android {
         }
     }
 
+    viewBinding {
+        enabled = true
+    }
+/*
     buildFeatures {
         viewBinding true
     }
-
+*/
 }
 
 dependencies {
