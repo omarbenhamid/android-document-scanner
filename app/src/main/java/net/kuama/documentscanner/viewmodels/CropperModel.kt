@@ -12,6 +12,9 @@ import net.kuama.documentscanner.support.Failure
 import net.kuama.documentscanner.domain.FindPaperSheetContours
 import net.kuama.documentscanner.domain.PerspectiveTransform
 import net.kuama.documentscanner.domain.UriToBitmap
+import net.kuama.documentscanner.utils.PointUtils
+import org.opencv.core.Point
+import org.opencv.core.Size
 
 class CropperModel : ViewModel() {
     private val perspectiveTransform: PerspectiveTransform = PerspectiveTransform()
@@ -69,7 +72,11 @@ class CropperModel : ViewModel() {
             findPaperSheetUseCase(
                 FindPaperSheetContours.Params(bitmap)
             ) { foundCorners: Corners? ->
-                corners.value = foundCorners
+                corners.value = foundCorners ?: PointUtils.getSortedCorners(
+                    listOf(Point(0.0,0.0), Point(0.0, bitmap.height.toDouble()),
+                        Point(bitmap.width.toDouble(), bitmap.height.toDouble()),
+                        Point(bitmap.width.toDouble(), 0.0)),
+                    Size(bitmap.width.toDouble(), bitmap.height.toDouble()))
             }
         }
     }

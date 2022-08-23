@@ -5,6 +5,7 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.Bitmap
 import android.net.Uri
+import android.util.Size
 import androidx.appcompat.app.AppCompatActivity
 import androidx.camera.core.ImageAnalysis
 import androidx.camera.core.ImageCapture
@@ -12,6 +13,7 @@ import androidx.camera.core.ImageCaptureException
 import androidx.camera.core.ImageProxy
 import androidx.camera.core.impl.utils.futures.FutureCallback
 import androidx.camera.core.impl.utils.futures.Futures.addCallback
+import androidx.camera.view.CameraController
 import androidx.camera.view.CameraController.IMAGE_ANALYSIS
 import androidx.camera.view.CameraController.IMAGE_CAPTURE
 import androidx.camera.view.LifecycleCameraController
@@ -100,7 +102,7 @@ class ScannerViewModel : ViewModel() {
             outputDirectory,
             SimpleDateFormat(
                 FILENAME_FORMAT, Locale.US
-            ).format(System.currentTimeMillis()) + ".jpg"
+            ).format(System.currentTimeMillis()) + ".bmp"
         )
         // Create output options object which contains file + metadata
         val outputOptions = ImageCapture.OutputFileOptions.Builder(photoFile).build()
@@ -144,6 +146,9 @@ class ScannerViewModel : ViewModel() {
         }
         controller.imageAnalysisBackpressureStrategy = ImageAnalysis.STRATEGY_KEEP_ONLY_LATEST
         controller.setEnabledUseCases(IMAGE_CAPTURE or IMAGE_ANALYSIS)
+
+        controller.imageCaptureMode = ImageCapture.CAPTURE_MODE_MINIMIZE_LATENCY
+        controller.imageCaptureTargetSize = CameraController.OutputSize(Size(4000,4000)) //~200 DPI a4 will be filling half of camera view
 
         controller.bindToLifecycle(lifecycleOwner)
         viewFinder.controller = controller
